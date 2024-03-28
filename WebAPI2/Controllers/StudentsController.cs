@@ -76,18 +76,64 @@ namespace WebAPI2.Controllers
             return student;
         }
         // POST api/values
-        public void Post([FromBody] string value)
+        public IHttpActionResult Post([FromBody] Student stud)
         {
-        }
+
+            string query = "Insert into Students(Name,Age) VALUES (@Name, @Age);";
+            string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Name", stud.Name);
+                    command.Parameters.AddWithValue("@Age", stud.Age);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                 
+              }
+                return Ok();
+           }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody] string value)
+        public IHttpActionResult Put( [FromBody] Student stud)
         {
+            string query = "Update Students set Name=@Name, Age=@Age where id=@ID;";
+            string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Name", stud.Name);
+                    command.Parameters.AddWithValue("@Age", stud.Age);
+                    command.Parameters.AddWithValue("@ID", stud.ID);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+
+            }
+            return Ok();
         }
 
         // DELETE api/values/5
         public void Delete(int id)
         {
+            string query = "Delete Students where id="+id+";";
+            string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                   
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+
+            }
+          
         }
     }
 }
