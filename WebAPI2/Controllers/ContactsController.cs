@@ -10,16 +10,16 @@ using WebAPI2.Models;
 
 namespace WebAPI2.Controllers
 {
-    public class StudentsController : ApiController
+    public class ContactsController : ApiController
     {
         // GET api/values
-        public IEnumerable<Student> Get()
+        public IEnumerable<Contacts> Get()
         {
 
 
-            List<Student> students = new List<Student> ();
+            List<Contacts> contacts = new List<Contacts> ();
             //read all students from database
-            string query = "Select * FROM Students";
+            string query = "Select * FROM Contacts";
             string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
             using (SqlConnection connection = new SqlConnection (connectionString))
             {
@@ -33,25 +33,27 @@ namespace WebAPI2.Controllers
                         foreach (DataRow row in dataTable.Rows)
           
                         {
-                            students.Add(new Student
+                            contacts.Add(new Contacts
                             {
                                 ID = (int)row["ID"],
-                                Name = (string)row["Name"],
-                                Age = (int)row["Age"]
+                                FirstName = (string)row["FirstName"],
+                                LastName = (string)row["LastName"],
+                                Email = (string)row["Email"],
+                                Phone = (string)row["Phone"]
                             });
                         }
                     }
                 }
             }
-            return students;
+            return contacts;
         }
 
         // GET api/values/5
-        public Student Get(int id)
+        public Contacts Get(int ID)
         {
-            Student student = new Student();
+            Contacts contacts = new Contacts();
 
-            string query = "Select from Students where ID=" + id + ";";
+            string query = "Select from Contacts where ID=" + ID + ";";
             string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -63,30 +65,34 @@ namespace WebAPI2.Controllers
                     if (dataTable != null)
                     {
 
-                        student = new Student
+                        contacts = new Contacts
                         {
                             ID = (int)dataTable.Rows[0]["ID"],
-                            Name = (string)dataTable.Rows[0]["Name"],
-                            Age = (int)dataTable.Rows[0]["Age"]
+                            FirstName = (string)dataTable.Rows[0]["FirstName"],
+                            LastName = (string)dataTable.Rows[0]["LastName"],
+                            Email = (string)dataTable.Rows[0]["Email"],
+                            Phone = (string)dataTable.Rows[0]["Phone"]
                         };
 
                     }
                 }
             }
-            return student;
+            return contacts;
         }
         // POST api/values
-        public IHttpActionResult Post([FromBody] Student stud)
+        public IHttpActionResult Post([FromBody] Contacts cont)
         {
 
-            string query = "Insert into Students(Name,Age) VALUES (@Name, @Age);";
+            string query = "Insert into Students(FirstName, LastName, Email, Phone) VALUES (@FirstName, @LastName, @Email, @Phone);";
             string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Name", stud.Name);
-                    command.Parameters.AddWithValue("@Age", stud.Age);
+                    command.Parameters.AddWithValue("@FirstName", cont.FirstName);
+                    command.Parameters.AddWithValue("@LastName", cont.LastName);
+                    command.Parameters.AddWithValue("@Email", cont.Email);
+                    command.Parameters.AddWithValue("@Phone", cont.Phone);
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -97,17 +103,19 @@ namespace WebAPI2.Controllers
            }
 
         // PUT api/values/5
-        public IHttpActionResult Put( [FromBody] Student stud)
+        public IHttpActionResult Put( [FromBody] Contacts cont)
         {
-            string query = "Update Students set Name=@Name, Age=@Age where id=@ID;";
+            string query = "Update Contactss set FirstName=@FirstName, LastName=@LastName, Email=@Email, Phone=@Phone where ID=@ID;";
             string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Name", stud.Name);
-                    command.Parameters.AddWithValue("@Age", stud.Age);
-                    command.Parameters.AddWithValue("@ID", stud.ID);
+                    command.Parameters.AddWithValue("@ID", cont.ID);
+                    command.Parameters.AddWithValue("@FirstName", cont.FirstName);
+                    command.Parameters.AddWithValue("@LastName", cont.LastName);
+                    command.Parameters.AddWithValue("@Email", cont.Email);
+                    command.Parameters.AddWithValue("@Phone", cont.Phone);
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -118,9 +126,9 @@ namespace WebAPI2.Controllers
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        public void Delete(int ID)
         {
-            string query = "Delete Students where id="+id+";";
+            string query = "Delete Students where ID="+ID+";";
             string connectionString = @"Data Source=localhost, Initial Catalog = WebAPI; Integrated Security=True;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -135,5 +143,14 @@ namespace WebAPI2.Controllers
             }
           
         }
+    }
+
+    public class Contacts
+    {
+        public int ID { get; internal set; }
+        public string FirstName { get; internal set; }
+        public string LastName { get; internal set; }
+        public string Email { get; internal set; }
+        public string Phone { get; internal set; }
     }
 }
